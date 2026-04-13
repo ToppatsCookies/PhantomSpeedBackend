@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import crypto from "crypto";
@@ -10,13 +10,13 @@ async function startServer() {
   // API Routes
   
   // Latency test endpoint
-  app.get("/api/ping", (req, res) => {
+  app.get("/api/ping", (req: Request, res: Response) => {
     console.log(`[Server] Ping request received from ${req.ip}`);
     res.status(204).send();
   });
 
   // Download test endpoint - streams random data
-  app.get("/api/download", (req, res) => {
+  app.get("/api/download", (req: Request, res: Response) => {
     const size = parseInt(req.query.size as string) || 20 * 1024 * 1024; // Default 20MB for faster start
     console.log(`[Server] Download started: ${size} bytes to ${req.ip}`);
     
@@ -49,7 +49,7 @@ async function startServer() {
   });
 
   // Upload test endpoint - consumes data
-  app.post("/api/upload", (req, res) => {
+  app.post("/api/upload", (req: Request, res: Response) => {
     console.log(`[Server] Upload chunk received from ${req.ip}`);
     req.on("data", () => {});
     req.on("end", () => {
@@ -58,7 +58,7 @@ async function startServer() {
   });
 
   // ISP/Server Info Mock (In a real app, this would use GeoIP)
-  app.get("/api/info", (req, res) => {
+  app.get("/api/info", (req: Request, res: Response) => {
     res.json({
       isp: "Phantom Fiber Networks",
       server: "London, UK (Primary)",
@@ -76,7 +76,7 @@ async function startServer() {
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
-    app.get("*", (req, res) => {
+    app.get("*", (req: Request, res: Response) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
